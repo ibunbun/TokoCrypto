@@ -160,7 +160,7 @@ thead {
 .transact-form {
   display: none;
   position: fixed;
-  top:100px;
+  top: 100px;
   left: 0; 
   right: 0; 
   margin-left: auto; 
@@ -188,6 +188,8 @@ thead {
   color: #606060;
   margin: 5px 0;
   box-sizing: border-box;
+  box-shadow: none;
+  -webkit-appearance: none;
 }
 
 .transact-form input:focus {
@@ -287,4 +289,17 @@ thead {
   line-height: 8px;
   width: -3px;
   vertical-align: middle;
+}
+
+@media all and (max-width: 600px) {
+  .wrapper {
+    padding: 30px 15px;
+    margin: 0;
+  }
+
+  .ewallet,
+  .transact-form {
+    top: 50px;
+    padding: 30px 15px;
+  }
 }

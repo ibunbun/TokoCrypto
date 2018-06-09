@@ -61,6 +61,7 @@ class Cryptos extends Component {
 		    } else if (varA < varB) {
 		      comparison = -1;
 		    }
+		    
 		    return (
 		      (order === 'desc') ? (comparison * -1) : comparison
 		    );
@@ -102,7 +103,7 @@ class Cryptos extends Component {
 	              </thead>
 	              <tbody>
 	                {this.state.cryptos.map((val, key) => {
-	                	
+
 	                  let price = val.price_idr;
 	                  let changeClass;
 
