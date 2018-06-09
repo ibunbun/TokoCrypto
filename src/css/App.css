@@ -1,27 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
@@ -41,12 +17,13 @@ h6 {
 
 .wrapper {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
   background-color: #fff;
   padding: 50px;
   margin-top: 50px;
   margin-bottom: 50px;
+  box-sizing: border-box;
 }
 
 .header {
@@ -56,19 +33,11 @@ h6 {
   margin-bottom: 50px;
 }
 
-.logo {
-  /*float: left;*/
-}
-
 .title {
   font-weight: 700;
   font-size: 30px;
   color: #42b549;
   margin-bottom: 7px;
-}
-
-.menu {
-  /*float: right;*/
 }
 
 .ewallet-button,
@@ -106,6 +75,10 @@ h6 {
   width: 100%;
   text-align: center;
   margin-top: 25px;
+}
+
+.crypto-table {
+  min-width: 500px;
 }
 
 thead {
@@ -168,9 +141,10 @@ thead {
   z-index: 99;
   background-color: #fff;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   padding: 35px 50px;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .transact-form {
@@ -184,8 +158,9 @@ thead {
   z-index: 99;
   background-color: #fff;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   padding: 35px 50px;
+  box-sizing: border-box;
 }
 
 .transact-form p {
@@ -223,7 +198,7 @@ thead {
 .transact-option a {
   text-decoration: none;
   display: inline-block;
-  padding: 5px 0;
+  padding: 4px 0;
   border: 1px solid #ccc;
   width: 50%;
   text-align: center;
@@ -292,6 +267,16 @@ thead {
 
 .show {
   display: block;
+}
+
+.sort {
+  display: inline-flex;
+  font-size: 7px;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  line-height: 8px;
+  width: -3px;
+  vertical-align: middle;
 }
 
 @keyframes App-logo-spin {
