@@ -26,6 +26,8 @@ h6 {
   box-sizing: border-box;
 }
 
+/* HEADER */
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -39,6 +41,8 @@ h6 {
   color: #42b549;
   margin-bottom: 7px;
 }
+
+/* BUTTONS */
 
 .ewallet-button,
 .close-button,
@@ -69,6 +73,8 @@ h6 {
 .close-button:hover {
   background-color: #ef430c;
 }
+
+/* TABLES */
 
 .crypto-table,
 .ewallet-table {
@@ -130,6 +136,8 @@ thead {
   color: #42b549;
 }
 
+/* EWALLET POP UP */
+
 .ewallet {
   display: none;
   position: fixed;
@@ -146,6 +154,8 @@ thead {
   text-align: center;
   box-sizing: border-box;
 }
+
+/* TRANSACTION FORM POP UP */
 
 .transact-form {
   display: none;
@@ -277,9 +287,4 @@ thead {
   line-height: 8px;
   width: -3px;
   vertical-align: middle;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
