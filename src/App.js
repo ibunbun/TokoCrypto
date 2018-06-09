@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
+import './reset.css';
 import './App.css';
 
 class App extends Component {
@@ -7,24 +8,82 @@ class App extends Component {
     super();
     this.state = {
       cryptos: [],
-      ewallet: [{'name':'Rupiah','amount':'10000000'}],
+      ewallet: {'Rupiah':'10000000'},
       cryptName: '',
       cryptPrice: '',
       cryptGet: '0',
-      cryptGetRp: '0'
+      cryptGetRp: '0',
+      ewalletShow: false,
+      formShow: false,
+      overlayShow: false,
+      transactShow: false
     };
   }
 
   componentDidMount() {
-    fetch('https://api.coinmarketcap.com/v1/ticker/?limit=10&convert=IDR')
-    .then(results => {
-      return results.json();
-    }).then(json => {
-      //console.log(json);
+    this.loadCryptos();
+
+    // fetch new cryptos every 5 min
+    setInterval(()=> this.loadCryptos(), 300000);
+
+    // Check for localstorage
+    let localEwallet = localStorage.getItem('ewallet');
+
+    if (localEwallet) {
+      localEwallet = JSON.parse(localEwallet);
       this.setState({
-        cryptos: json,
+        ewallet : localEwallet
       });
+    }
+  }
+
+  async loadCryptos() {
+    try {
+      fetch('https://api.coinmarketcap.com/v1/ticker/?limit=100&convert=IDR')
+      .then(results => {
+        return results.json();
+      }).then(json => {
+        //console.log(json);
+        this.setState({
+          cryptos: json,
+        });
+      }).catch(e => console.log(e) );
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  toggleEwallet(e) {
+    e.preventDefault();
+    let ewalletShow = !this.state.ewalletShow;
+    let overlayShow = !this.state.overlayShow;
+    this.setState({ ewalletShow: ewalletShow, overlayShow: overlayShow });
+  }
+
+  toggleForm(e) {
+    e.preventDefault();
+    let formShow = !this.state.formShow;
+    let overlayShow = !this.state.overlayShow;
+    this.setState({ 
+      formShow: formShow,
+      overlayShow: overlayShow,
+      cryptGet: "0",
+      cryptGetRp: "0"
     });
+    document.getElementById("cryptVal").value = "";
+    document.getElementById("rupiahVal").value = "";
+  }
+
+  toggleTransact(e) {
+    e.preventDefault();
+    let transactShow = !this.state.transactShow;
+    this.setState({ 
+      transactShow: transactShow,
+      cryptGet: "0",
+      cryptGetRp: "0" 
+    });
+    document.getElementById("cryptVal").value = "";
+    document.getElementById("rupiahVal").value = "";
   }
 
   handleSort(e, sortKey){
@@ -79,13 +138,16 @@ class App extends Component {
     let name = e.currentTarget.dataset['name'];
     let price = e.currentTarget.dataset['price'];
 
-    document.getElementById("insertVal").value = "";
+    document.getElementById("rupiahVal").value = "";
+    document.getElementById("cryptVal").value = "";
 
     this.setState({
       cryptName: name,
       cryptPrice: price,
       cryptGet: "0"
     })
+
+    this.toggleForm(e);
   }
 
   handleCalc(e,transact) {
@@ -96,164 +158,226 @@ class App extends Component {
       
       if (transact === 'buy') {
         let get = value/price;
-        get = this.filterPrice(get);
         //get = get.toFixed(2);
 
         this.setState({
-          cryptGet: get
+          cryptGet: get,
+          cryptGetRp: '0'
         })
+
+        document.getElementById("cryptVal").value = "";
       } else {
         let get = price * value;
-        get = this.filterPrice(get);
 
         this.setState({
-          cryptGetRp: get
+          cryptGetRp: get,
+          cryptGet: '0'
         })
+
+        document.getElementById("rupiahVal").value = "";
       }
     } else {
       this.setState({
         cryptGet: '0',
         cryptGetRp: '0'
       })
+
+      if (transact === 'buy') {
+        document.getElementById("cryptVal").value = "";
+      } else {
+        document.getElementById("rupiahVal").value = "";
+      }
     }
   }
 
   handleBuy(e) {
-    let rupiah = this.state.ewallet[0].amount;
+    e.preventDefault();
+    let rupiah = parseFloat(this.state.ewallet['Rupiah']);
+    let valRupiah = parseFloat(document.getElementById("rupiahVal").value);
+    let cryptName = this.state.cryptName;
 
-    let valRupiah = document.getElementById("insertVal").value;
-
-    if (parseFloat(valRupiah) > parseFloat(rupiah)) {
+    if (valRupiah > rupiah) {
       alert("Saldo tidak mencukupi");
     } else {
-      rupiah = rupiah - valRupiah;
-      let data = this.state.ewallet;
-      data[0].amount = rupiah;
-      data.push({'name':this.state.cryptName, 'amount':this.state.cryptGet});
-      this.setState({
-        ewallet: data,
-        cryptGet: "0"
-      });
+      if ( valRupiah > 0 && this.state.cryptGet > 0) {
+        rupiah = rupiah - valRupiah;
 
-      document.getElementById("insertVal").value = "";
+        let data = this.state.ewallet;
 
-      alert("Transaksi Sukses");
+        data['Rupiah'] = rupiah;
+
+        if (data[cryptName] > 0) {
+          data[cryptName] = data[cryptName] + this.state.cryptGet;
+        } else {
+          data[cryptName] = this.state.cryptGet;
+        }
+        
+        this.setState({
+          ewallet: data,
+          cryptGet: "0"
+        });
+
+        localStorage.setItem("ewallet", JSON.stringify(data));
+
+        document.getElementById("rupiahVal").value = "";
+
+        alert("Transaksi berhasil");
+      } else {
+        alert("Masukkan jumlah rupiah");
+      }
     }
   }
 
   handleSell(e) {
-    let rupiah = this.state.ewallet[0].amount;
-    let valCrypt = document.getElementById("insertVal2").value;
+    e.preventDefault();
+    let rupiah = parseFloat(this.state.ewallet['Rupiah']);
+    let valCrypt = parseFloat(document.getElementById("cryptVal").value);
+    let cryptName = this.state.cryptName;
 
-    let ewallet = this.state.ewallet;
-    let crypt = ewallet.filter(( obj ) => {
-      return obj.name === this.state.cryptName;
-    });
+    let data = this.state.ewallet;
+    let crypt = 0;
 
-    if (crypt.length > 0) {
-      crypt = crypt[0].amount;
-    } else {
-      crypt = 0;
+    if (data[cryptName] > 0) {
+      crypt = data[cryptName];
     }
 
-    if (parseFloat(valCrypt) > parseFloat(crypt)) {
+    if (valCrypt > crypt) {
       alert("Saldo tidak mencukupi");
     } else {
-      rupiah = rupiah + this.state.cryptGetRp;
-      crypt = crypt - valCrypt;
 
-      let data = this.state.ewallet;
+      if ( valCrypt > 0 && this.state.cryptGetRp > 0) {
+        rupiah = rupiah + this.state.cryptGetRp;
+        crypt = crypt - valCrypt;
 
-      function updateAmount( name, amount ) {
-        for (var i in data) {
-          if (data[i].name === name) {
-            data[i].amount = amount;
-            break;
-          }
-        }
+        data[cryptName] = crypt;
+        data['Rupiah'] = rupiah;
+
+        this.setState({
+          ewallet: data,
+          cryptGetRp: "0"
+        });
+
+        localStorage.setItem("ewallet", JSON.stringify(data));
+
+        document.getElementById("cryptVal").value = "";
+
+        alert("Transaksi berhasil");
+      } else {
+        alert("Masukkan jumlah yang ingin dijual");
       }
-
-      updateAmount(this.state.cryptName, crypt);
-      data[0].amount = rupiah;
-
-      this.setState({
-        ewallet: data,
-        cryptGetRp: "0"
-      });
-
-      document.getElementById("insertVal2").value = "";
-
-      alert("Transaksi Sukses");
     }
-  }
-
-  filterPrice(price) {
-    //price = Math.round(price);
-    //price = parseFloat(price).toLocaleString('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return price;
   }
 
   render() {
 
-    var cryptoItems = this.state.cryptos;
-    var ewallet = this.state.ewallet;
+    let cryptName = this.state.cryptName;
 
     return (
-      <div>
-        <table className="m-table">
+      <div className="wrapper">
+
+        <div className="header">
+          <div className="logo">
+            <h1 className="title">TokoCrypto</h1>
+            <p>Jual beli cryptocurrency yang aman dan terpercaya.</p>
+          </div>
+          <div className="menu">
+            <a href="" onClick={e => this.toggleEwallet(e)} className="ewallet-button">eWallet</a>
+          </div>
+        </div>
+
+        <h2>Top 100 Cryptocurrency in The Market</h2>
+        <h6>Tip: click on the column title to sort specifically by asc/desc</h6>
+
+        <table className="crypto-table">
           <thead>
             <tr>
-              <th onClick={e => this.handleSort(e, 'rank')} data-sort="desc">Rank</th>
-              <th onClick={e => this.handleSort(e, 'name')} data-sort="asc">Name</th>
-              <th onClick={e => this.handleSort(e, 'price_idr')} data-sort="asc">Price</th>
-              <th onClick={e => this.handleSort(e, 'percent_change_24h')} data-sort="desc">Change (24 hour)</th>
+              <th onClick={e => this.handleSort(e, 'rank')} data-sort="desc" title="Sort by Rank">Rank</th>
+              <th onClick={e => this.handleSort(e, 'name')} data-sort="asc" title="Sort by Name">Name</th>
+              <th onClick={e => this.handleSort(e, 'price_idr')} data-sort="asc" title="Sort by Price">Price</th>
+              <th onClick={e => this.handleSort(e, 'percent_change_24h')} data-sort="desc" title="Sort by Change in 24 hour">Change (24 hour)</th>
             </tr>
           </thead>
           <tbody>
-            {cryptoItems.map((val, key) => {
-              let price = this.filterPrice(val.price_idr);
+            {this.state.cryptos.map((val, key) => {
+              let price = val.price_idr;
+
+              let changeClass;
+
+              if (Math.sign(val.percent_change_24h) === -1) {
+                changeClass = 'dec';
+              } else {
+                changeClass = 'inc';
+              }
+
               return (
                 <tr key={key} data-price={price} data-name={val.name} onClick={e => this.handleForm(e)}>
                   <td data-title="rank">{val.rank}</td>
-                  <td data-title="name">{val.name}</td>
-                  <td data-title="price">Rp {price}</td>
-                  <td data-title="change">{val.percent_change_24h}%</td>
+                  <td data-title="name" className="name-col">{val.name}</td>
+                  <td data-title="price" className="price-col">Rp {parseFloat(price).toLocaleString('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                  <td data-title="change" className={changeClass}>{val.percent_change_24h}%</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
 
-        <div>
-          <p>Your balance:</p>
-          {ewallet.map((val, key) => {
-            let amount = val.amount;
-            return (
-              <li key={key}>{val.name}: {amount}</li>
-            );
-          })}
+        <div className={ this.state.ewalletShow ? "ewallet show" : "ewallet" }>
+
+          <h2>Your Current Balance</h2>
+
+          <table className="ewallet-table">
+            <thead>
+              <tr>
+                <th>Currency</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(this.state.ewallet).map((key) => {
+              if (key === 'Rupiah' || (key !== 'Rupiah' && this.state.ewallet[key] > 0)){
+                return (
+                    <tr key={key}> 
+                      <td>{key}</td>
+                      <td>{parseFloat(this.state.ewallet[key]).toLocaleString('id', { minimumFractionDigits: 0, maximumFractionDigits: 15})}</td>
+                    </tr>
+                );
+              } else {
+                return (<tr key={key} stlye={{display:"none"}}></tr>);
+              }
+            })}
+            </tbody>
+          </table>
+          
+          <a href="" onClick={e => this.toggleEwallet(e)} className="close-button">CLOSE</a>
         </div>
 
-        <div>
-          <p>{this.state.cryptName}</p>
-          <p>Price: {this.state.cryptPrice}</p>
-          <div>
-            <p>Buy</p>
+        <div className={ this.state.formShow ? "transact-form show" : "transact-form" }>
+          <h2>{this.state.cryptName}</h2>
+          <p>Price: {this.state.cryptPrice} IDR</p>
+          <div className="transact-option">
+            <a href="" onClick={e => this.toggleTransact(e)} className={ this.state.transactShow ? "buy-tab" : "buy-tab active" }>BUY</a>
+            <a href="" onClick={e => this.toggleTransact(e)} className={ this.state.transactShow ? "sell-tab active" : "sell-tab" }>SELL</a>
+          </div>
+          <div className={ this.state.transactShow ? "buy-form" : "buy-form show" }>
+            <p className="balance">Your Rupiah: {this.state.ewallet['Rupiah']}</p>
             <p>Input Rupiah:</p>
-            <input id="insertVal" type="text" onChange={e => this.handleCalc(e,'buy')} />
+            <input id="rupiahVal" type="text" onChange={e => this.handleCalc(e,'buy')} />
             <p>Get {this.state.cryptName}:</p>
             <input type="text" value={this.state.cryptGet} disabled />
-            <button onClick={e => this.handleBuy(e)}>BUY</button>
+            <a href="" onClick={e => this.handleBuy(e)}>BUY</a>
           </div>
-          <div>
-            <p>Sell</p>
+          <div className={ this.state.transactShow ? "sell-form show" : "sell-form" }>
+            <p className="balance">Your {this.state.cryptName}: {this.state.ewallet[cryptName] ? this.state.ewallet[cryptName] : '0'}</p>
             <p>Input {this.state.cryptName}:</p>
-            <input id="insertVal2" type="text" onChange={e => this.handleCalc(e,'sell')} />
+            <input id="cryptVal" type="text" onChange={e => this.handleCalc(e,'sell')} />
             <p>Get Rupiah:</p>
             <input type="text" value={this.state.cryptGetRp} disabled />
-            <button onClick={e => this.handleSell(e)}>SELL</button>
+            <a href="" onClick={e => this.handleSell(e)}>SELL</a>
           </div>
+          <div style={{textAlign:'center'}}><a href="" onClick={e => this.toggleForm(e)} className="close-button">CLOSE</a></div>
         </div>
+
+        <div className={ this.state.overlayShow ? "overlay show" : "overlay" }></div>
       </div>
     );
   }

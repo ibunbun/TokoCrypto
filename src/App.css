@@ -22,6 +22,278 @@
   font-size: large;
 }
 
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  color: #606060;
+  background-color: #eee;
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+h6 {
+  font-size: 12px;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 50px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.logo {
+  /*float: left;*/
+}
+
+.title {
+  font-weight: 700;
+  font-size: 30px;
+  color: #42b549;
+  margin-bottom: 7px;
+}
+
+.menu {
+  /*float: right;*/
+}
+
+.ewallet-button,
+.close-button,
+.buy-form a,
+.sell-form a {
+  text-decoration: none;
+  color: #fff;
+  background-color: #42b549;
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 3px;
+}
+
+.close-button {
+  margin-top: 30px;
+  letter-spacing: 2px;
+  font-size: 12px;
+  padding: 3px 13px;
+  background-color: #ff5432;
+}
+
+.ewallet-button:hover,
+.buy-form a:hover,
+.sell-form a:hover {
+  background-color: #4fa149;
+}
+
+.close-button:hover {
+  background-color: #ef430c;
+}
+
+.crypto-table,
+.ewallet-table {
+  width: 100%;
+  text-align: center;
+  margin-top: 25px;
+}
+
+thead {
+  font-weight: 700;
+}
+
+.crypto-table thead tr,
+.ewallet-table thead tr {
+  border-bottom: 1px solid #aaa;
+}
+
+.crypto-table tr,
+.ewallet-table tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.crypto-table tbody tr:hover {
+  background-color: #eee;
+}
+
+.crypto-table th,
+.crypto-table td {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.ewallet-table th,
+.ewallet-table td {
+  padding: 5px;
+}
+
+.crypto-table th:hover {
+  color: #42b549;
+}
+
+.price-col {
+  text-align: right;
+}
+
+.name-col {
+  text-align: left;
+}
+
+.dec {
+  color: #ff5432;
+}
+
+.inc {
+  color: #42b549;
+}
+
+.ewallet {
+  display: none;
+  position: absolute;
+  top: 100px;
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto;
+  z-index: 99;
+  background-color: #fff;
+  width: 100%;
+  max-width: 400px;
+  padding: 35px 50px;
+  text-align: center;
+}
+
+.transact-form {
+  display: none;
+  position: absolute;
+  top:100px;
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  z-index: 99;
+  background-color: #fff;
+  width: 100%;
+  max-width: 400px;
+  padding: 35px 50px;
+}
+
+.transact-form p {
+  margin-top: 5px;
+}
+
+.transact-form input {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 7px 10px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  color: #606060;
+  margin: 5px 0;
+  box-sizing: border-box;
+}
+
+.transact-form input:focus {
+  outline: none;
+}
+
+.transact-form input:disabled {
+  background-color: #eee;
+}
+
+.transact-option {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.transact-option a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 5px 0;
+  border: 1px solid #ccc;
+  width: 50%;
+  text-align: center;
+  letter-spacing: 2px;
+  font-size: 13px;
+}
+
+.transact-option a:active {
+  color: #606060;
+}
+
+.transact-option a:hover {
+  background-color: #f3fef3;
+}
+
+.buy-tab {
+  border-radius: 3px 0 0 3px;
+}
+
+.sell-tab {
+  border-left: none !important;
+  border-radius: 0 3px 3px 0;
+}
+
+.active {
+  color: #fff;
+  background-color: #42b549;
+  border-color: #42b549 !important;
+}
+
+.active:active {
+  color: #fff !important;
+}
+
+.active:hover {
+  background-color: #42b549 !important;
+}
+
+.buy-form,
+.sell-form {
+  display: none;
+}
+
+.balance {
+  font-weight: 700;
+}
+
+.buy-form a,
+.sell-form a {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  margin-top: 5px;
+  letter-spacing: 2px;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,.5);
+}
+
+.show {
+  display: block;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
