@@ -157,7 +157,7 @@ class App extends Component {
         // Clear input box
         document.getElementById("rupiahVal").value = "";
 
-        let msg = "Selamat transaksi Anda berhasil.\nSaldo Rupiah Anda saat ini: " + rupiah + "\nSaldo " + cryptName + " Anda saat ini: " + data[cryptName];
+        let msg = "Selamat, transaksi Anda berhasil!\nSaldo Rupiah Anda saat ini: " + rupiah + "\nSaldo " + cryptName + " Anda saat ini: " + data[cryptName];
 
         alert(msg);
       } else {
@@ -204,7 +204,7 @@ class App extends Component {
         // Clear input box
         document.getElementById("cryptVal").value = "";
 
-        let msg = "Selamat transaksi Anda berhasil.\nSaldo Rupiah Anda saat ini: " + rupiah + "\nSaldo " + cryptName + " Anda saat ini: " + crypt;
+        let msg = "Selamat, transaksi Anda berhasil!\nSaldo Rupiah Anda saat ini: " + rupiah + "\nSaldo " + cryptName + " Anda saat ini: " + crypt;
 
         alert(msg);
       } else {
